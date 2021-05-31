@@ -9,10 +9,59 @@ class TestConv(unittest.TestCase):
         self.assertEqual(8, pr.horizontal)
         self.assertEqual(6, pr.vertical)
         self.assertEqual(1, pr.h_stride)
+        self.assertEqual(1, pr.v_stride)
         self.assertEqual(1, pr.h_padding)
         self.assertEqual(1, pr.v_padding)
 
+    def test_different_numbers(self):
+        pr = PhotoreceptorImageConverter(1, 2, 3, 7)
+        self.assertEqual(3, pr.horizontal)
+        self.assertEqual(2, pr.vertical)
+        self.assertEqual(1, pr.h_stride)
+        self.assertEqual(1, pr.v_stride)
+        self.assertEqual(0, pr.h_padding)
+        self.assertEqual(0, pr.v_padding)
 
+    def test_one_photoreceptor(self):
+        pr = PhotoreceptorImageConverter(3, 3, 3, 1)
+        self.assertEqual(1, pr.horizontal)
+        self.assertEqual(1, pr.vertical)
+        self.assertEqual(0, pr.h_padding)
+        self.assertEqual(0, pr.v_padding)
+
+    def test_round_to_zero(self):
+        pr = PhotoreceptorImageConverter(5, 5, 1, 1)
+        self.assertEqual(1, pr.horizontal)
+        self.assertEqual(1, pr.vertical)
+        self.assertEqual(2, pr.h_padding)
+        self.assertEqual(0, pr.v_padding)
+
+    def test_negative_padding(self):
+        pr = PhotoreceptorImageConverter(1, 3, 3, 1)
+        self.assertEqual(1, pr.horizontal)
+        self.assertEqual(1, pr.vertical)
+        self.assertEqual(-1, pr.h_padding)
+        self.assertEqual(-1, pr.v_padding)
+
+
+    def test_stride_2(self):
+        pr = PhotoreceptorImageConverter(3, 3, 4, 6)
+        self.assertEqual(3, pr.horizontal)
+        self.assertEqual(2, pr.vertical)
+        self.assertEqual(1, pr.h_stride)
+        self.assertEqual(2, pr.v_stride)
+        self.assertEqual(1, pr.h_padding)
+        self.assertEqual(1, pr.v_padding)
+
+    def test_stride_2_neg_pad(self):
+        pr = PhotoreceptorImageConverter(1, 3, 4, 1)
+        self.assertEqual(1, pr.horizontal)
+        self.assertEqual(1, pr.vertical)
+        self.assertEqual(-1, pr.h_padding)
+        self.assertEqual(-1, pr.v_padding)
+
+    def test_simple_application(self):
+        self.fail()
 
 
 if __name__ == '__main__':
