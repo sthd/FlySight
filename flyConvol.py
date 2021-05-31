@@ -1,16 +1,11 @@
 import numpy
 
-k=3
-n=6
-m=8
-p=m*n
 
-def recConvol(k,n,m,p):
-    h=numpy.sqrt((m*p)/n)
-    v=(p/h)
-    Sh=(m/h)
-    Sv=(n/v)
-    padH=((k-Sh)/2)
-    padV=((k-Sv)/2)
-
-
+class PhotoreceptorImageConverter:
+    def __init__(self, kernel_size: int, rows: int, columns: int, photoreceptor_num: int):
+        self.horizontal = numpy.sqrt((columns * photoreceptor_num) / rows)
+        self.vertical = (photoreceptor_num / self.horizontal)
+        self.h_stride = (columns / self.horizontal)
+        self.v_stride = (rows / self.vertical)
+        self.h_padding = ((kernel_size - self.h_stride) / 2)
+        self.v_padding = ((kernel_size - self.v_stride) / 2)
