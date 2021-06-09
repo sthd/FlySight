@@ -15,6 +15,6 @@ if __name__ == '__main__':
     # aux.greyscale_plot(img)
     print(img.shape)
 
-    pr = PhotoreceptorImageConverter(ker, img.shape, 30000)
+    pr = PhotoreceptorImageConverter(ker, img.shape, 2000)
     res = pr.apply(img)
     aux.greyscale_plot(res)

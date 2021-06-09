@@ -115,6 +115,42 @@ class TestConv(unittest.TestCase):
         self.assertEqualArrays(np.array([[2, 4],
                                          [6, 8]]), pr.apply(pic))
 
+    def test_video_input(self):
+        pic1 = np.ones((3, 3))
+        pic2 = np.zeros(pic1.shape)
+        movie = []
+        for i in range(100):
+            if i % 2:
+                movie.append(pic1)
+            else:
+                movie.append(pic2)
+        pr = PhotoreceptorImageConverter(np.ones((3, 3)), pic1.shape, 1)
+        out_sig = pr.receive(movie)
+        for i, val in enumerate(out_sig):
+            if i % 2:
+                self.assertEqualArrays(np.array([[9]]), val)
+            else:
+                self.assertEqual(np.zeros((1, 1)), val)
+
+    def test_stream(self):
+        movie = []
+        for i in range(100):
+            movie.append(i*np.ones((3, 3)))
+        pr = PhotoreceptorImageConverter(np.ones((3, 3)), movie[0].shape, 1)
+        for i, buf in enumerate(pr.stream(movie)):
+            self.assertEqualArrays(np.array([[i*9]]), buf[0])
+
+    def test_stream_bigger_buffer(self):
+        movie = []
+        for i in range(100):
+            movie.append(i*np.ones((3, 3)))
+        pr = PhotoreceptorImageConverter(np.ones((3, 3)), movie[0].shape, 1)
+        for i, buf in enumerate(pr.stream(movie, buffer_size=2)):
+            self.assertLessEqual(len(buf), 2)
+            if len(buf) == 2:
+                self.assertEqualArrays(np.array([[(i - 1) * 9]]), buf[0])
+                self.assertEqualArrays(np.array([[i * 9]]), buf[1])
+
 
 if __name__ == '__main__':
     unittest.main()
