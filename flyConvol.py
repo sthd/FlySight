@@ -39,12 +39,14 @@ class PhotoreceptorImageConverter:
     def _convolve(self, half_ker, output, padded_pic):
         for i in range(self.vertical):
             for j in range(self.horizontal):
-                input_row = i * self.v_stride + self.v_padding
-                input_column = j * self.h_stride + self.h_padding
+                input_row = i * self.v_stride + half_ker
+                input_column = j * self.h_stride + half_ker
                 output[i, j] = self._overlay_kernel(half_ker, input_row, input_column, padded_pic)
 
     def _overlay_kernel(self, half_ker, i, j, padded_pic):
-        return np.multiply(self.kernel, self._kernel_sized_portion(padded_pic, half_ker, i, j)).sum()
+        ker = self._kernel_sized_portion(padded_pic, half_ker, i, j)
+        ker = np.pad(ker, ((0, self.kernel.shape[0] - ker.shape[0]), (0, self.kernel.shape[1] - ker.shape[1])))
+        return np.multiply(self.kernel, ker).sum()
 
     @staticmethod
     def _kernel_sized_portion(pic, half_ker_size, center_row, center_col):

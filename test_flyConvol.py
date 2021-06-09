@@ -116,7 +116,5 @@ class TestConv(unittest.TestCase):
                                          [6, 8]]), pr.apply(pic))
 
 
-
-
 if __name__ == '__main__':
     unittest.main()
