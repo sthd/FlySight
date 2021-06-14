@@ -63,7 +63,7 @@ class PhotoreceptorImageConverter:
     def receive(self, movie: np.array) -> np.array:
         return np.array([self.apply(frame) for frame in movie])
 
-    def stream(self, movie, buffer_size=1):
+    def stream(self, movie, buffer_size: int = 1):
         buffer = []
         for frame in movie:
             buffer.append(self.apply(frame))

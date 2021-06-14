@@ -2,21 +2,23 @@ import unittest
 
 import numpy as np
 
+import matplotlib.pyplot as plt
+import scipy.signal
+
 from EMD.oned_filters import ButterworthLPF
 
 
-class TestButterworthLPF(unittest.TestCase):
-    def test_basic_filtering(self):
-        time = np.linspace(0, 1e4)
-        highf = np.pi * 100
-        hf_sig = np.sin(time * highf)
-        lowf = np.pi * 10
-        lf_sig = np.sin(time * lowf)
-        sig = lf_sig + hf_sig
-        lpf = ButterworthLPF()
-        for expected, actual in zip(lf_sig, lpf(sig)):
-            self.assertAlmostEqual(expected, actual)
+def simple_sine_wave(freq, time):
+    return np.sin(time * np.pi * freq)
 
 
 if __name__ == '__main__':
-    unittest.main()
+    time_frame = np.linspace(0, 10, 1000)
+    hf_sig = 0.1 * simple_sine_wave(10, time_frame)
+    lf_sig = simple_sine_wave(1, time_frame)
+    sig = lf_sig + hf_sig
+    lpf = ButterworthLPF()
+    plt.plot(time_frame, lf_sig, 'g')
+    plt.plot(time_frame, sig, 'b')
+    plt.plot(time_frame, lpf(sig), 'r')
+    plt.show()
