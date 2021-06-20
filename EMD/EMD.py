@@ -49,11 +49,7 @@ def emd_rect_response():
     plt.show()
 
 
-if __name__ == '__main__':
-    length = 1000
-    time_axis = np.linspace(0, length, length)
-    # emd_impulse_response()
-    # emd_rect_response()
+def sine_wave_response():
     sin = np.sin(time_axis * np.pi / 60)
     cos = np.cos(time_axis * np.pi / 60)
     plt.plot(time_axis, sin, 'b')
@@ -63,4 +59,12 @@ if __name__ == '__main__':
     print(emd_response)
     plt.plot(time_axis, emd_response)
     plt.show()
+
+
+if __name__ == '__main__':
+    length = 1000
+    time_axis = np.linspace(0, length, length)
+    emd_impulse_response()
+    emd_rect_response()
+    sine_wave_response()
 
