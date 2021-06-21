@@ -9,7 +9,7 @@ import cv2
 from EMD.oned_filters import ButterworthLPF
 from EMD.dual_signal_processor import DualSignalProcessor
 
-BUFFER_SIZE = 100
+BUFFER_SIZE = 120
 
 
 def emd_action(sig1, sig2, lpf, mul, sub):
@@ -29,30 +29,59 @@ EMD = DualSignalProcessor(emd_action, lpf=LPF, mul=MUL, sub=SUB)
 from flyConvol import PhotoreceptorImageConverter
 
 GIF = "stripes.gif"
+GIF2 = "complex_stripes.gif"
+
+
+def greyscale_gif(gif_path):
+    frames, exts, image_specs = gif2numpy.convert(gif_path, False)
+    return [cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) for frame in frames]
+
+
+def emd_row(buf, row_index):
+    some_row = np.array(buf)[:, row_index, :]
+    print(some_row.shape)
+    # aux.greyscale_plot(some_row)
+    return [EMD(some_row[:, i], some_row[:, i + 1]) for i in range(some_row.shape[1] - 1)]
+
+
+def angle_response_from_frequency_response_array(fr_array):
+    ar_emd = []
+    for fr in fr_array:
+        integrand = []
+        for idx, val in enumerate(fr):
+            if idx:
+                normalizer = idx ** -2
+            else:
+                normalizer = 0
+            integrand.append(normalizer * val)
+        ar_emd.append(sum(integrand))
+    return ar_emd
+
 
 if __name__ == '__main__':
-    frames, exts, image_specs = gif2numpy.convert(GIF, False)
-    gframes = []
-    for frame in frames:
-        gframes.append(cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY))
+    g_frames = greyscale_gif(GIF2)
+    g_frames_t = [np.transpose(f) for f in g_frames]
+    for f in g_frames_t:
+        aux.greyscale_plot(f)
 
-    pr = PhotoreceptorImageConverter(aux.make_gaussian_kernel(15), (500, 500), (500 ** 2)//64)
+    frame_area = g_frames[0].shape[0] * g_frames[0].shape[1]
+    pr = PhotoreceptorImageConverter(aux.make_gaussian_kernel(15), g_frames[0].shape, frame_area // 16)
 
-
-    for buffer in pr.stream(gframes * BUFFER_SIZE, buffer_size=BUFFER_SIZE):
-        npa_buf = np.array(buffer)
-        some_row = npa_buf[:, 50, :]
-        print(some_row.shape)
-        emd = []
-        for i in range(some_row.shape[1] - 1):
-            emd.append(EMD(some_row[:, i], some_row[:, i + 1]))
+    for buffer in pr.stream(g_frames_t * BUFFER_SIZE, buffer_size=BUFFER_SIZE):
+        emd = emd_row(buffer, buffer[0].shape[0] // 2)
         if len(buffer) == BUFFER_SIZE:
-        #     aux.greyscale_plot(np.array(emd))
+            aux.greyscale_plot(np.array(emd))
             plt.plot(emd[10])
             plt.show()
 
-    x = 42
+        fr_emd = [np.abs(np.fft.rfft(tr)) for tr in emd]
 
+        if len(buffer) == BUFFER_SIZE:
+            aux.greyscale_plot(np.array(fr_emd))
+            plt.plot(fr_emd[10])
+            plt.show()
 
-
-
+        ar_emd = angle_response_from_frequency_response_array(fr_emd)
+        if len(buffer) == BUFFER_SIZE:
+            plt.plot(ar_emd)
+            plt.show()
