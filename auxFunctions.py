@@ -10,6 +10,8 @@ def greyscale_plot(image):
 
 
 def make_gaussian_kernel(size: int, sigma: float = 1) -> np.array:
+    coefficient = 1/((2 * np.pi) * (sigma ** 2))
     x, y = np.meshgrid(np.linspace(-1, 1, size), np.linspace(-1, 1, size))
     d = np.sqrt(x * x + y * y)
-    return np.exp(-((d - 0) ** 2 / (2.0 * sigma ** 2))) / (size ** 2)
+    gaus = np.exp(-((d - 0) ** 2 / (2.0 * sigma ** 2)))
+    return gaus / gaus.sum()

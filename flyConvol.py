@@ -46,7 +46,7 @@ class PhotoreceptorImageConverter:
     def _overlay_kernel(self, half_ker, i, j, padded_pic):
         ker = self._kernel_sized_portion(padded_pic, half_ker, i, j)
         ker = np.pad(ker, ((0, self.kernel.shape[0] - ker.shape[0]), (0, self.kernel.shape[1] - ker.shape[1])))
-        return np.multiply(self.kernel, ker).sum()
+        return np.multiply(self.kernel, ker).sum() / (self.kernel.shape[0] ** 2)
 
     @staticmethod
     def _kernel_sized_portion(pic, half_ker_size, center_row, center_col):

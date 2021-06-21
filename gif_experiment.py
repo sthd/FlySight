@@ -38,6 +38,7 @@ if __name__ == '__main__':
 
     pr = PhotoreceptorImageConverter(aux.make_gaussian_kernel(15), (500, 500), (500 ** 2)//64)
 
+
     for buffer in pr.stream(gframes * BUFFER_SIZE, buffer_size=BUFFER_SIZE):
         npa_buf = np.array(buffer)
         some_row = npa_buf[:, 50, :]
@@ -45,10 +46,10 @@ if __name__ == '__main__':
         emd = []
         for i in range(some_row.shape[1] - 1):
             emd.append(EMD(some_row[:, i], some_row[:, i + 1]))
-        # if len(buffer) == BUFFER_SIZE:
+        if len(buffer) == BUFFER_SIZE:
         #     aux.greyscale_plot(np.array(emd))
-
-
+            plt.plot(emd[10])
+            plt.show()
 
     x = 42
 
