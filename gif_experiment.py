@@ -45,8 +45,10 @@ if __name__ == '__main__':
         emd = []
         for i in range(some_row.shape[1] - 1):
             emd.append(EMD(some_row[:, i], some_row[:, i + 1]))
-        if len(buffer) == BUFFER_SIZE:
-            aux.greyscale_plot(np.array(emd))
+        # if len(buffer) == BUFFER_SIZE:
+        #     aux.greyscale_plot(np.array(emd))
+
+
 
     x = 42
 
