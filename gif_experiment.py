@@ -39,13 +39,11 @@ def greyscale_gif(gif_path):
 
 def emd_row(buf, row_index):
     some_row = np.array(buf)[:, row_index, :]
-    print(some_row.shape)
-    # aux.greyscale_plot(some_row)
     return [EMD(some_row[:, i], some_row[:, i + 1]) for i in range(some_row.shape[1] - 1)]
 
 
 def angle_response_from_frequency_response_array(fr_array):
-    ar_emd = []
+    angle_response_emd = []
     for fr in fr_array:
         integrand = []
         for idx, val in enumerate(fr):
@@ -54,8 +52,8 @@ def angle_response_from_frequency_response_array(fr_array):
             else:
                 normalizer = 0
             integrand.append(normalizer * val)
-        ar_emd.append(sum(integrand))
-    return ar_emd
+        angle_response_emd.append(sum(integrand))
+    return angle_response_emd
 
 
 if __name__ == '__main__':
