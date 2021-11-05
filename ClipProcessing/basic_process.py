@@ -34,6 +34,7 @@ SUB = DualSignalProcessor(np.subtract)
 
 EMD = DualSignalProcessor(emd_action, lpf=LPF, mul=MUL, sub=SUB)
 
+test_EMD = DualSignalProcessor(emd_action, lpf=LPF, mul=MUL, sub=SUB)
 EXAMPLE = "/Users/iddobar-haim/Library/Mobile Documents/com~apple~CloudDocs/FlySightProject/RealInputClips/Corner(B)/B_1_1/B_1_1_1_2_N_24_108.mp4"
 
 OBJECTS = {
@@ -104,6 +105,7 @@ if __name__ == '__main__':
     # basic_response_mid_horizontal("/Users/iddobar-haim/Library/Mobile Documents/com~apple~CloudDocs/FlySightProject/RealInputClips/Corner(B)/B_1_1")
     all_clips(basic_response_mid_horizontal)
     # x=42
+
 
 
 

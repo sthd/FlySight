@@ -2,7 +2,7 @@ import glob
 import os
 
 import cv2
-
+import numpy as np
 import auxFunctions as aux
 from flyConvol import PhotoreceptorImageConverter
 
@@ -37,6 +37,8 @@ def extractFPS(video_input):
 def extractVideoParameters(videoInput):
     return extractFPS(videoInput), int(videoInput.get(3)), int(videoInput.get(4))
 
+def import_all_scenes():
+
 
 if __name__ == '__main__':
 
@@ -54,12 +56,14 @@ if __name__ == '__main__':
         videoInput = cv2.VideoCapture(file)
         sceneName = os.path.splitext(os.path.basename(file))[0]
         fps, frame_width, frame_height = extractVideoParameters(videoInput)
-
+        #fps=10
+        #frame_width=103
+        #frame_height=58
         outputVideoPath = 'alternativeVideo'
         makeMissingDir(outputVideoPath)
 
         outputVideo, outputCodec = videoCodecAndExt('mp4')
-        # out = cv2.VideoWriter(outputVideo, outputCodec, fps, (frame_width, frame_height))
+        out_after = cv2.VideoWriter(outputVideo, outputCodec, fps, (103, 58))
         out = cv2.VideoWriter(outputVideo, outputCodec, fps, (frame_width, frame_height))
         counter = 0
         currentFrame = 0
@@ -70,33 +74,22 @@ if __name__ == '__main__':
             framesPath = 'frames/' + str(sceneName)
             makeMissingDir(framesPath)
             name = './' + framesPath + '/frame' + str(currentFrame) + '.jpg'
-            greyFrame2D = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            greyFrame3D = cv2.cvtColor(greyFrame2D, cv2.COLOR_GRAY2BGR)
+            a_greyFrame2D = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            a_greyFrame3D = cv2.cvtColor(a_greyFrame2D, cv2.COLOR_GRAY2BGR)
 
-            #if counter < 4:
-                #counter += 1
-            pr = PhotoreceptorImageConverter(ker, greyFrame2D.shape, 750*8)
-            res = pr.apply(greyFrame2D)
-            print(res)
-            res = res / 255
-            res_int = res.astype(int)
-                #dev1 = (res / WHITE_LEVEL)
-                #print(greyFrame2D.shape)
 
-                # print(type(jd))
-                # print(jd.shape)
-                # print(jd.ndim)
-                # print(jd)
-            aux.greyscale_plot(res)
-            print(res_int)
-            aux.greyscale_plot(greyFrame2D)
+            pr = PhotoreceptorImageConverter(ker, a_greyFrame2D.shape, 750*8)
+            frame_res = pr.apply(a_greyFrame2D)
 
-            #greyFrame2D = cv2.cvtColor(res_int, cv2.COLOR_BGR2GRAY)
-            greyFrame3D = cv2.cvtColor(res_int, cv2.COLOR_GRAY2BGR)
-            out.write(greyFrame3D)  # video is constructed of 3d arrays
-            allFrames.append(greyFrame2D)
+            frame_res = 255 * frame_res / np.max(frame_res)
+            frame_res_int = frame_res.astype(np.uint8)
+
+            a2_greyFrame3D = cv2.cvtColor(frame_res_int, cv2.COLOR_GRAY2BGR)
+            out.write(a2_greyFrame3D)  # video is constructed of 3d arrays
+            #allFrames.append(a_greyFrame2D)
             # print('Creating...' + name)
-            cv2.imwrite(name, greyFrame2D)  # save grey scale frames of each video
+            #aux.greyscale_plot(a2_greyFrame3D)
+            cv2.imwrite(name, a2_greyFrame3D)  # save grey scale frames of each video
             # cv2.imshow('video gray', greyFrame2D)
             # cv2.waitKey(0)
             currentFrame += 1
@@ -104,5 +97,27 @@ if __name__ == '__main__':
         videoInput.release()
         out.release()
         cv2.destroyAllWindows()
+
+        # if counter < 4:
+        # counter += 1
+
+
+        # print(frame_res_int)
+
+        # aux.greyscale_plot(res)
+        # aux.greyscale_plot(greyFrame2D)
+
+        # a1_greyFrame2D = cv2.cvtColor(frame_res_int, cv2.COLOR_BGR2GRAY)
+
         #return allFrames
     # print(allFrames[1])
+
+# res /=255
+
+# dev1 = (res / WHITE_LEVEL)
+# print(greyFrame2D.shape)
+
+# print(type(jd))
+# print(jd.shape)
+# print(jd.ndim)
+# print(jd)

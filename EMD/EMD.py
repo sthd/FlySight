@@ -19,6 +19,9 @@ SUB = DualSignalProcessor(np.subtract)
 
 EMD = DualSignalProcessor(emd_action, lpf=LPF, mul=MUL, sub=SUB)
 
+test_EMD = DualSignalProcessor(emd_action, lpf=LPF, mul=MUL, sub=SUB)
+
+
 
 def emd_impulse_response():
     impulse = np.zeros(length)
@@ -68,3 +71,8 @@ if __name__ == '__main__':
     emd_rect_response()
     sine_wave_response()
 
+    #in2 = np.array([0,1])
+    #in1 = np.array([1,0])
+    #results = test_EMD(in1, in2)
+    #print("response is " )
+    #print(results)

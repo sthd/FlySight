@@ -4,10 +4,10 @@ import numpy as np
 
 import auxFunctions as aux
 
-import cv2
+# import cv2
 
 from EMD.oned_filters import ButterworthLPF
-from EMD.dual_signal_processor import DualSignalProcessor
+# from EMD.dual_signal_processor import DualSignalProcessor
 
 BUFFER_SIZE = 120
 
@@ -59,8 +59,8 @@ def angle_response_from_frequency_response_array(fr_array):
 if __name__ == '__main__':
     g_frames = greyscale_gif(GIF2)
     g_frames_t = [np.transpose(f) for f in g_frames]
-    for f in g_frames_t:
-        aux.greyscale_plot(f)
+    # for f in g_frames_t:
+    #     aux.greyscale_plot(f)
 
     frame_area = g_frames[0].shape[0] * g_frames[0].shape[1]
     pr = PhotoreceptorImageConverter(aux.make_gaussian_kernel(15), g_frames[0].shape, frame_area // 16)
@@ -81,5 +81,16 @@ if __name__ == '__main__':
 
         ar_emd = angle_response_from_frequency_response_array(fr_emd)
         if len(buffer) == BUFFER_SIZE:
+        #
+        #     a_file = open("EMD_Response.txt", "w")
+        #
+        #     for row in ar_emd:
+        #         np.savetxt(a_file, row)
+        #
+
+        #     a_file.close()
+            #print(ar_emd.shape)
             plt.plot(ar_emd)
+            plt.grid()
+            plt.ylabel("EMD Response")
             plt.show()

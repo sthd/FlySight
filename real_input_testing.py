@@ -10,11 +10,11 @@ if __name__ == '__main__':
     ker = aux.make_gaussian_kernel(9, .5)
     # aux.greyscale_plot(ker)
 
-    img = cv2.imread('pic.jpg', cv2.IMREAD_GRAYSCALE)
+    img = cv2.imread('Demoiselle_Crane.jpg', cv2.IMREAD_GRAYSCALE)
 
     # aux.greyscale_plot(img)
     print(img.shape)
 
-    pr = PhotoreceptorImageConverter(ker, img.shape, 2000)
+    pr = PhotoreceptorImageConverter(ker, img.shape, 6000)
     res = pr.apply(img)
     aux.greyscale_plot(res)
