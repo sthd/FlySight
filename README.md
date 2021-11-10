@@ -1,8 +1,7 @@
-# Insect-based spatial orientation algorithm
+# Insect-based Spatial Orientation Algorithm
 
 <p align="center">
     <img src="https://github.com/sthd/FlySight/blob/master/Design/model.png" width="400" alt="The Flying agent Model">
-    
 </p>
 
 Made with **[Iddo bar-Haim](https://www.linkedin.com/in/iddo-bar-haim-92193a18a)** 
@@ -19,8 +18,8 @@ The EMD we implemented takes two signals
 
 ## References
 
-**[Spatial Encoding of Translational Optic Flow in Planar Scenes by Elementary Motion Detector Arrays](https://doi.org/10.1038/s41598-018-24162-z
-)** by **Julien Lecoeur, Emily Baird and Dario Floreano.**
+**[Spatial Encoding of Translational Optic Flow in Planar Scenes by Elementary Motion Detector Arrays](https://doi.org/10.1038/s41598-018-24162-z)** 
+by **Julien Lecoeur, Emily Baird and Dario Floreano.**
 
 **[Neural Circuits for Elementary Motion Detection](https://doi.org/10.3109/01677063.2013.876022)** by **Alexander Borst.**
 
