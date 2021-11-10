@@ -1,7 +1,7 @@
 # Insect-based spatial orientation algorithm
 
 <p align="center">
-    <img src="https://github.com/sthd/FlySight/tree/master/Design/model.svg" width="400" alt="The Flying agent Model">
+    <img src="https://github.com/sthd/FlySight/blob/master/Design/model.png" width="400" alt="The Flying agent Model">
     
 </p>
 
