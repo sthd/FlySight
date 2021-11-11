@@ -173,11 +173,12 @@ class TestSP_Split(unittest.TestCase):
 
 class TestSP_Arrange(TestCase):
     def test_switch_2(self):
-         cross = SP_Arrange((1, 0))
-         signal1 = np.array((1, 2, 3))
-         signal2 = np.array((0, 2, 0))
-         self.assertListEqual(signal1.tolist(), cross(signal1, signal2)[1].tolist())
-         self.assertListEqual(signal2.tolist(), cross(signal1, signal2)[0].tolist())
+        cross = SP_Arrange((1, 0))
+        signal1 = np.array((1, 2, 3))
+        signal2 = np.array((0, 2, 0))
+        self.assertListEqual(signal1.tolist(), cross(signal1, signal2)[1].tolist())
+        self.assertListEqual(signal2.tolist(), cross(signal1, signal2)[0].tolist())
+
 
 if __name__ == '__main__':
     unittest.main()

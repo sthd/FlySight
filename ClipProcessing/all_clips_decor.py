@@ -1,6 +1,6 @@
 import os
 
-ROOT = "/Users/iddobar-haim/Library/Mobile Documents/com~apple~CloudDocs/FlySightProject/RealInputClips"
+ROOT = "/Users/iddobar-haim/Library/Mobile Documents/com~apple~CloudDocs/FlySightProject/RealInputClips2"
 #ROOT ="/Users/elior/Library/Mobile Documents/com~apple~CloudDocs/FlySightProject/RealInputClips"
 PILLAR = "Pillar(A)"
 CORNER = "Corner(B)"
@@ -9,6 +9,7 @@ OBJECT_DIRS = (PILLAR, CORNER, EDGE)
 
 
 def all_clips(function, *args, **kwargs):
+
     for odir in OBJECT_DIRS:
         for root, dirs, files in os.walk(os.path.join(ROOT, odir)):
             for name in dirs:
@@ -28,6 +29,7 @@ def all_clips(function, *args, **kwargs):
                     print(current_clip)
                     out_dir = os.path.join(os.path.split(current_clip)[0], function.__name__ + '_func')
                     function(output_dir=out_dir, input_clip=current_clip, *args, **kwargs)
+
 
 
 def make_txt_file_with_mp4_name(output_dir, input_clip):

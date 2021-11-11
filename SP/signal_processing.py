@@ -55,27 +55,40 @@ class SP_Block:
                 mid_signals.extend(args[current_input:])
                 return self(*mid_signals)
 
-            return SP_Block(lambda *args: out_func(*args), inputs=sum(r.inputs for r in senders), outputs=self.outputs)
+            return SP_Block(out_func, inputs=sum(r.inputs for r in senders), outputs=self.outputs)
         else:
             return senders.send_to(self)
+
+    def __repr__(self):
+        return self.action.__name__
 
 
 class SP_Wire(SP_Block):
     def __init__(self):
-        super().__init__(lambda signal: signal)
+        def wire(signal):
+            return signal
+        super().__init__(wire)
 
 
 class SP_Split(SP_Block):
      def __init__(self, branches: int):
-         super().__init__(lambda signal: (signal, ) * branches, outputs=branches)
+         def split(signal):
+             return (signal, ) * branches
+         super().__init__(split, outputs=branches)
 
 
 class SP_Arrange(SP_Block):
     def __init__(self, placess: tuple):
         def mix(*signals):
             output = [None] * len(placess)
+            sig_spread = list()
+            for sigs in signals:
+                if isinstance(sigs, list):
+                    sig_spread.extend(sigs)
+                else:
+                    sig_spread.append(sigs)
             for idx, place in enumerate(placess):
-                output[idx] = signals[place]
+                output[idx] = sig_spread[place]
             return output
 
         super().__init__(mix, inputs=len(placess), outputs=len(placess))

@@ -1,21 +1,18 @@
 import os.path
-
-import matplotlib.pyplot as plt
-from matplotlib import cm
-import numpy as np
-from matplotlib.ticker import LinearLocator
-
-
-import auxFunctions as aux
+import pickle
 
 import cv2
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib import cm
+from matplotlib.ticker import LinearLocator
 
-from ClipProcessing.all_clips_decor import all_clips, ROOT
-from EMD.oned_filters import ButterworthLPF
+import auxFunctions as aux
+from ClipProcessing.all_clips_decor import all_clips
+from EMD.EMD import make_basic_emd
 from EMD.dual_signal_processor import DualSignalProcessor
-
+from EMD.oned_filters import ButterworthLPF
 from flyConvol import PhotoreceptorImageConverter
-from gif_experiment import emd_row, angle_response_from_frequency_response_array
 
 BUFFER_SIZE = 120
 
@@ -80,6 +77,9 @@ def basic_response_mid_horizontal(output_dir, input_clip=EXAMPLE):
         art.append(ar_emd)
     art_arr = np.array(art)
 
+    with open(f"{os.path.join(output_dir, os.path.basename(clip_file_name))}.surface", 'wb') as sur:
+        pickle.dump(art_arr, sur)
+
     fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
     FRAMES, RESPONSES = art_arr.shape
     x = np.array(range(FRAMES))
@@ -101,14 +101,26 @@ def basic_response_mid_horizontal(output_dir, input_clip=EXAMPLE):
     print("Done")
 
 
+def emd_row(buf, row_index):
+    some_row = np.array(buf)[:, row_index, :]
+    return [make_basic_emd()(some_row[:, i], some_row[:, i + 1]) for i in range(some_row.shape[1] - 1)]
+
+
+def angle_response_from_frequency_response_array(fr_array):
+    angle_response_emd = []
+    for fr in fr_array:
+        integrand = []
+        for idx, val in enumerate(fr):
+            if idx:
+                normalizer = idx ** -2
+            else:
+                normalizer = 0
+            integrand.append(normalizer * val)
+        angle_response_emd.append(sum(integrand))
+    return angle_response_emd
+
 if __name__ == '__main__':
     # basic_response_mid_horizontal("/Users/iddobar-haim/Library/Mobile Documents/com~apple~CloudDocs/FlySightProject/RealInputClips/Corner(B)/B_1_1")
     all_clips(basic_response_mid_horizontal)
     # x=42
-
-
-
-
-
-
 

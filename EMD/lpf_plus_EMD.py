@@ -1,13 +1,14 @@
 import numpy as np
 from scipy.signal import butter, lfilter
 from matplotlib import pyplot as plt
+import SP.signal_processing as spb
 
 
 # Receives a signal in Time Domain,  desired cutoff frequency, sampling rate, order is set as 5
 # Returns the signal in Time Domain after filtering
-def butter_lowpass_filter(signal, cutoff, fs, order=5):
+def butter_lowpass_filter(signal, cutoff_frequency, fs, order=5):
     nyq = 0.5 * fs
-    normalised_cutoff = cutoff / nyq
+    normalised_cutoff = cutoff_frequency / nyq
     # butter returns Numerator (b) and Denominator (a) polynomials of the IIR filter
     b, a = butter(order, normalised_cutoff, btype='low', analog=False)  # Butterworth filter design
     filtered_signal = lfilter(b, a, signal)  # Filter data along one-dimension with the designed IIR filter
@@ -32,7 +33,19 @@ if __name__ == '__main__':
     cutoff = 3.667
     order = 6
     fs = 30  # sampling rate in HZ
-    # fs = 32        #### in order to try array of size 2
+    # fs = 4        #### in order to try array of size 2
+
+    lpf = spb.SP_Block(butter_lowpass_filter, 1, 1, cutoff_frequency=cutoff, fs=fs, order=order)
+    multiplier = spb.SP_Block(np.multiply, inputs=2)
+    subtractor = spb.SP_Block(np.subtract, inputs=2)
+
+    splitter = spb.SP_Split(2)
+    frequency_split = splitter.send_to((lpf,))
+    mul_prep = spb.SP_Arrange((0, 3, 1, 2))
+    to_multiply = mul_prep.receive_from((frequency_split, frequency_split))
+    to_sub = to_multiply.send_to((multiplier, multiplier))
+
+    emd = subtractor.receive_from(to_sub)
 
     # Signals' parameters
     T = 0.5  # interval in seconds
@@ -47,17 +60,17 @@ if __name__ == '__main__':
     # signal2 = np.array([0, 0, 0, 0, 0, 20, 20, 20, 20, 20, 0, 0, 0, 0, 0])
 
     # big object moving right
-    signal1 = np.array([0, 0, 0, 0, 12, 20, 20, 20, 30, 0, 0, 0, 0, 0, 0])
-    signal2 = np.array([0, 0, 0, 0, 0, 0, 0, 12, 20, 20, 30, 0, 0, 0, 0])
+    # signal1 = np.array([0, 0, 0, 0, 12, 20, 20, 20, 30, 0, 0, 0, 0, 0, 0])
+    # signal2 = np.array([0, 0, 0, 0, 0, 0, 0, 12, 20, 20, 30, 0, 0, 0, 0])
 
     # 3 seperate objects moving right
-    # signal1 = np.array([0, 0, 0, 0, 0, 20, 0, 20, 0, 20, 0, 0, 0, 0, 0])
-    # signal2 = np.array([0, 0, 0, 0, 0, 0, 20, 0, 20, 0, 20, 0, 0, 0, 0])
+    signal1 = np.array([0, 0, 0, 0, 0, 20, 0, 20, 0, 20, 0, 0, 0, 0, 0])
+    signal2 = np.array([0, 0, 0, 0, 0, 0, 20, 0, 20, 0, 20, 0, 0, 0, 0])
 
     # signal1 = np.array([0, 20])
     # signal2 = np.array([20, 0])
 
-    EMD_response = perform_EMD(signal1, signal2)  # executing EMD on 1D signals
+    EMD_response = emd(signal1, signal2)  # executing EMD on 1D signals
 
     plt.subplot(3, 1, 1)
     plt.plot(t, signal1, 'b-', label='signal1')
