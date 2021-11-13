@@ -10,29 +10,9 @@ from matplotlib.ticker import LinearLocator
 import auxFunctions as aux
 from ClipProcessing.all_clips_decor import all_clips
 from EMD.EMD import make_basic_emd
-from EMD.dual_signal_processor import DualSignalProcessor
-from EMD.oned_filters import ButterworthLPF
 from flyConvol import PhotoreceptorImageConverter
 
 BUFFER_SIZE = 120
-
-
-def emd_action(sig1, sig2, lpf, mul, sub):
-    sig1_lpf = lpf(sig1)
-    sig2_lpf = lpf(sig2)
-    cross1 = mul(sig1_lpf, sig2)
-    cross2 = mul(sig1, sig2_lpf)
-    return sub(cross1, cross2)
-
-
-LPF = ButterworthLPF()
-MUL = DualSignalProcessor(np.multiply)
-SUB = DualSignalProcessor(np.subtract)
-
-EMD = DualSignalProcessor(emd_action, lpf=LPF, mul=MUL, sub=SUB)
-
-test_EMD = DualSignalProcessor(emd_action, lpf=LPF, mul=MUL, sub=SUB)
-EXAMPLE = "/Users/iddobar-haim/Library/Mobile Documents/com~apple~CloudDocs/FlySightProject/RealInputClips/Corner(B)/B_1_1/B_1_1_1_2_N_24_108.mp4"
 
 OBJECTS = {
     'A': 'Pillar',
@@ -42,10 +22,7 @@ OBJECTS = {
 
 TEXTURES = ("Solid", "Checker Board", "Natural")
 
-CF = {
-    'Y': 0,
-    'N': 1
-}
+CF = {'Y': 0, 'N': 1}
 
 
 def tranlate_clip_name(clip_file_name: str) -> str:
@@ -55,9 +32,32 @@ def tranlate_clip_name(clip_file_name: str) -> str:
            f" BG Texture: {TEXTURES[int(fields[2]) - 1]}, Movement {fields[3]} {'No' * CF[fields[5]]} Chicken Fence"
 
 
-def basic_response_mid_horizontal(output_dir, input_clip=EXAMPLE):
+def basic_response_mid_horizontal(output_dir: str, input_clip: str):
+    clip_file_name = get_clip_file_name(input_clip)
+    greyscale_frames = capture_video_clip_frames(input_clip)
+    angle_response_over_time_array = get_emd_responses(greyscale_frames, PhotoreceptorImageConverter(aux.make_gaussian_kernel(15), greyscale_frames[0].shape, 6000))
+    pickle_output_array(angle_response_over_time_array, clip_file_name, output_dir)
+    save_surface_plot(angle_response_over_time_array, clip_file_name, output_dir)
+
+
+def get_clip_file_name(input_clip: str) -> str:
     clip_file_name = os.path.split(input_clip)[1]
     print(clip_file_name)
+    return clip_file_name
+
+
+def get_emd_responses(g_frames, photoreceptor: PhotoreceptorImageConverter) -> np.array:
+    angle_respone_over_time = []
+    for buffer in photoreceptor.stream(g_frames, buffer_size=BUFFER_SIZE):
+        emd = emd_row(buffer, buffer[0].shape[0] // 2)
+        frequency_response_emd = [np.abs(np.fft.rfft(tr)) for tr in emd]
+        angle_response_emd = angle_response_from_frequency_response_array(frequency_response_emd)
+        angle_respone_over_time.append(angle_response_emd)
+    art_arr = np.array(angle_respone_over_time)
+    return art_arr
+
+
+def capture_video_clip_frames(input_clip: str):
     cap = cv2.VideoCapture(input_clip)
     g_frames = []
     while True:
@@ -68,29 +68,26 @@ def basic_response_mid_horizontal(output_dir, input_clip=EXAMPLE):
             break
         grayFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         g_frames.append(grayFrame)
-    pr = PhotoreceptorImageConverter(aux.make_gaussian_kernel(15), g_frames[0].shape, 6000)
-    art = []
-    for buffer in pr.stream(g_frames, buffer_size=BUFFER_SIZE):
-        emd = emd_row(buffer, buffer[0].shape[0] // 2)
-        fr_emd = [np.abs(np.fft.rfft(tr)) for tr in emd]
-        ar_emd = angle_response_from_frequency_response_array(fr_emd)
-        art.append(ar_emd)
-    art_arr = np.array(art)
+    return g_frames
 
+
+def pickle_output_array(output_array: np.array, clip_file_name: str, output_dir: str):
     with open(f"{os.path.join(output_dir, os.path.basename(clip_file_name))}.surface", 'wb') as sur:
-        pickle.dump(art_arr, sur)
+        pickle.dump(output_array, sur)
 
+
+def save_surface_plot(output_array: np.array, clip_file_name: str, output_dir: str):
     fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
-    FRAMES, RESPONSES = art_arr.shape
+    FRAMES, RESPONSES = output_array.shape
     x = np.array(range(FRAMES))
     y = np.array(range(RESPONSES))
     X, Y = np.meshgrid(x, y)
-    surf = ax.plot_surface(np.transpose(X), np.transpose(Y), art_arr, cmap=cm.coolwarm, linewidth=0, antialiased=False)
+    surf = ax.plot_surface(np.transpose(X), np.transpose(Y), output_array, cmap=cm.coolwarm, linewidth=0, antialiased=False)
     ax.set_xlabel('time [frames]')
     ax.set_ylabel('EMD')
     ax.set_zlabel('Amplitude')
     # Customize the z axis.
-    ax.set_zlim(-.1, 2.5)
+    ax.set_zlim(-.1, .5)
     ax.zaxis.set_major_locator(LinearLocator(10))
     # A StrMethodFormatter is used automatically
     ax.zaxis.set_major_formatter('{x:.02f}')
@@ -107,9 +104,9 @@ def emd_row(buf, row_index):
 
 
 def angle_response_from_frequency_response_array(fr_array):
-    angle_response_emd = []
+    angle_response_emd = list()
     for fr in fr_array:
-        integrand = []
+        integrand = list()
         for idx, val in enumerate(fr):
             if idx:
                 normalizer = idx ** -2
@@ -119,8 +116,6 @@ def angle_response_from_frequency_response_array(fr_array):
         angle_response_emd.append(sum(integrand))
     return angle_response_emd
 
-if __name__ == '__main__':
-    # basic_response_mid_horizontal("/Users/iddobar-haim/Library/Mobile Documents/com~apple~CloudDocs/FlySightProject/RealInputClips/Corner(B)/B_1_1")
-    all_clips(basic_response_mid_horizontal)
-    # x=42
 
+if __name__ == '__main__':
+    all_clips(basic_response_mid_horizontal)
