@@ -6,6 +6,7 @@ import scipy.signal
 
 @dataclass
 class ButterworthLPF:
+    """Old unused model."""
     sample_rate: float = 30.0
     cutoff: float = 1.1
     order: int = 6  # sin wave can be approx represented as polynomial

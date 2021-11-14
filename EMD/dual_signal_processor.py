@@ -2,6 +2,7 @@ import numpy as np
 
 
 class DualSignalProcessor:
+    """Old unused version of generic model."""
     def __init__(self, func=np.multiply, **kwargs):
         self.function = func
         self.aux = kwargs
