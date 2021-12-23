@@ -1,7 +1,7 @@
 import numpy as np
 
 import SP.signal_processing as spb
-from EMD.lpf_plus_EMD import butter_lowpass_filter
+from EMD.lpf_plus_EMD import butter_highpass_filter, butter_lowpass_filter
 
 
 # from oned_filters import ButterworthLPF
@@ -26,6 +26,14 @@ def emd_action(sig1, sig2, lpf, mul, sub):
 
 
 def make_basic_emd():
+    """
+    The EMD model used in the paper:
+        Spatial Encoding of Translational
+        Optic Flow in Planar Scenes by
+        Elementary Motion Detector Arrays
+    As can be seen in Figure 1.
+    :return: An SP_Block that simulates the EMD.
+    """
     cutoff = 3.667
     order = 6
     fs = 30  # sampling rate in HZ
@@ -35,6 +43,30 @@ def make_basic_emd():
 
     splitter = spb.SP_Split(2)
     frequency_split = splitter.send_to((lpf,))
+    mul_prep = spb.SP_Arrange((0, 3, 1, 2))
+    to_multiply = mul_prep.receive_from((frequency_split, frequency_split))
+    to_sub = to_multiply.send_to((multiplier, multiplier))
+
+    return subtractor.receive_from(to_sub)
+
+
+def make_original_emd():
+    """
+    The EMD model used in the paper:
+        Neural Circuits for Elementary Motion Detection
+    As can be seen in Figure 2.
+    :return: An SP_Block that simulates the EMD.
+    """
+    cutoff = 3.667
+    order = 6
+    fs = 30  # sampling rate in HZ
+    lpf = spb.SP_Block(butter_lowpass_filter, cutoff_frequency=cutoff, fs=fs, order=order)
+    hpf = spb.SP_Block(butter_highpass_filter, cutoff_frequency=cutoff, fs=fs, order=order)
+    multiplier = spb.SP_Block(np.multiply, inputs=2)
+    subtractor = spb.SP_Block(np.subtract, inputs=2)
+
+    splitter = spb.SP_Split(2)
+    frequency_split = splitter.send_to((lpf, hpf))
     mul_prep = spb.SP_Arrange((0, 3, 1, 2))
     to_multiply = mul_prep.receive_from((frequency_split, frequency_split))
     to_sub = to_multiply.send_to((multiplier, multiplier))

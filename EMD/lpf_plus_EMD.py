@@ -1,5 +1,5 @@
 import numpy as np
-from scipy.signal import butter, lfilter
+from scipy.signal import butter, filtfilt, lfilter
 from matplotlib import pyplot as plt
 import SP.signal_processing as spb
 
@@ -10,12 +10,26 @@ def butter_lowpass_filter(signal, cutoff_frequency, fs, order=5):
     nyq = 0.5 * fs
     normalised_cutoff = cutoff_frequency / nyq
     # butter returns Numerator (b) and Denominator (a) polynomials of the IIR filter
-    b, a = butter(order, normalised_cutoff, btype='low', analog=False) #Butterworth filter design
-    filtered_signal = lfilter(b, a, signal)  #Filter data along one-dimension with the designed IIR filter
+    b, a = butter(order, normalised_cutoff, btype='low', analog=False)  # Butterworth filter design
+    filtered_signal = lfilter(b, a, signal)  # Filter data along one-dimension with the designed IIR filter
     return filtered_signal
+
+
+def butter_highpass(cutoff_frequency, fs, order=5):
+    nyq = 0.5 * fs
+    normal_cutoff = cutoff_frequency / nyq
+    b, a = butter(order, normal_cutoff, btype='high', analog=False)
+    return b, a
+
+
+def butter_highpass_filter(data, cutoff_frequency, fs, order=5):
+    b, a = butter_highpass(cutoff_frequency, fs, order=order)
+    return filtfilt(b, a, data, padlen=len(data)//2)
+
 
 def lpf(signal):
     return butter_lowpass_filter(signal, cutoff, fs, order)
+
 
 def perform_EMD(signal1, signal2):
     lpf1 = lpf(signal1)
@@ -39,7 +53,7 @@ if __name__ == '__main__':
     n = int(T * fs)  # total number of samples
     t = np.linspace(0, T, n, endpoint=False)
 
-    #The lpf recovers the 1.2 Hz signal
+    # The lpf recovers the 1.2 Hz signal
 
     # expanding right
     # signal1 = np.array([0, 0, 0, 0, 0, 20, 20, 20, 0, 0, 0, 0, 0, 0, 0])

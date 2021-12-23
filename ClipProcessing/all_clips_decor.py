@@ -1,6 +1,6 @@
 import os
 
-ROOT = "/Users/iddobar-haim/Library/Mobile Documents/com~apple~CloudDocs/FlySightProject/RealInputClips2"
+ROOT = "/Users/iddobar-haim/Library/Mobile Documents/com~apple~CloudDocs/University/FlySightProject/RealInputClips2"
 #ROOT ="/Users/elior/Library/Mobile Documents/com~apple~CloudDocs/FlySightProject/RealInputClips"
 PILLAR = "Pillar(A)"
 CORNER = "Corner(B)"
