@@ -21,12 +21,12 @@ class TestSP_Block(unittest.TestCase):
         self.assertListEqual([-1, -2, -3], negative(signal).tolist())
 
     def test_double_input_single_output_add(self):
-        addition = SP_Block(np.add)
+        addition = SP_Block(np.add, inputs=2)
         signal = np.array((1, 2, 3))
         self.assertListEqual([2, 4, 6], addition(signal, signal).tolist())
 
     def test_single_input_double_output_plus_minus(self):
-        plus_minus = SP_Block(lambda sig: (sig, -1 * sig))
+        plus_minus = SP_Block(lambda sig: (sig, -1 * sig), outputs=2)
         signal = np.array((1, 2, 3))
         self.assertListEqual(signal.tolist(), plus_minus(signal)[0].tolist())
         self.assertListEqual([-1, -2, -3], plus_minus(signal)[1].tolist())

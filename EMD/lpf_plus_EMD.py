@@ -9,7 +9,7 @@ import SP.signal_processing as spb
 def butter_lowpass_filter(signal, cutoff_frequency, fs, order=5):
     nyq = 0.5 * fs
     normalised_cutoff = cutoff_frequency / nyq
-    # butter returns Numerator (b) and Denominator (a) polynomials of the IIR filter
+    #butter returns Numerator (b) and Denominatדor (a) polynomials of the IIR filter
     b, a = butter(order, normalised_cutoff, btype='low', analog=False)  # Butterworth filter design
     filtered_signal = lfilter(b, a, signal)  # Filter data along one-dimension with the designed IIR filter
     return filtered_signal
@@ -28,7 +28,7 @@ def butter_highpass_filter(data, cutoff_frequency, fs, order=5):
 
 
 def lpf(signal):
-    return butter_lowpass_filter(signal, cutoff, fs, order)
+     return butter_lowpass_filter(signal, cutoff, fs, order)
 
 
 def perform_EMD(signal1, signal2):

@@ -15,7 +15,7 @@ BUFFER_SIZE = 120
 
 
 def pickle_output_array_d(output_array: np.array, clip_file_name: str, output_dir: str, d):
-    with open(f"{os.path.join(output_dir, os.path.basename(clip_file_name))}_{d=}.surface", 'wb') as sur:
+    with open(f"{os.path.join(output_dir, os.path.basename(clip_file_name))}_{str(d)}.surface", 'wb') as sur:
         pickle.dump(output_array, sur)
 
 
@@ -37,12 +37,12 @@ def save_surface_plot_d(output_array: np.array, clip_file_name: str, output_dir:
     ax.set_title(tranlate_clip_name(clip_file_name))
     # Add a color bar which maps values to colors.
     fig.colorbar(surf, shrink=0.5, aspect=5)
-    plt.savefig(os.path.join(output_dir, f"{os.path.splitext(clip_file_name)[0]}_{d=}.png"))
+    plt.savefig(os.path.join(output_dir, f"{os.path.splitext(clip_file_name)[0]}_{str(d)}.png"))
     plt.close('all')
     print("Done")
 
 
-def dilation_response_mid_horizontal(output_dir: str, input_clip: str, dilation):
+def     dilation_response_mid_horizontal(output_dir: str, input_clip: str, dilation):
     """
     Calculates the angle response of an array of EMDs located at the the medial horizontal line of each frame.
     Inspired by the paper - "Spatial Encoding of Translational Optic Flow in Planar Scenes by Elementary Motion Detector Arrays".

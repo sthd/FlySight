@@ -58,7 +58,7 @@ def save_surface_plot(output_array: np.array, clip_file_name: str, output_dir: s
     ax.set_ylabel('EMD')
     ax.set_zlabel('Amplitude')
     # Customize the z axis.
-    ax.set_zlim(np.min(output_array) - 0.1*np.abs(np.min(output_array)), np.max(output_array) + 0.1*np.abs(np.max(output_array)))
+    ax.set_zlim(-.1, .5)
     ax.zaxis.set_major_locator(LinearLocator(10))
     # A StrMethodFormatter is used automatically
     ax.zaxis.set_major_formatter('{x:.02f}')
@@ -66,5 +66,4 @@ def save_surface_plot(output_array: np.array, clip_file_name: str, output_dir: s
     # Add a color bar which maps values to colors.
     fig.colorbar(surf, shrink=0.5, aspect=5)
     plt.savefig(os.path.join(output_dir, os.path.splitext(clip_file_name)[0] + '.png'))
-    plt.close('all')
     print("Done")

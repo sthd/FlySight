@@ -75,8 +75,12 @@ def vidsss():
 
         outputVideo, outputCodec = videoCodecAndExt('mp4', scene_name)
         outputVideo1, outputCodec = videoCodecAndExt('mp4', scene_name + str(1))
-        out_after = cv2.VideoWriter(outputVideo1, outputCodec, fps, (103, 58))
+        outputVideo2, outputCodec = videoCodecAndExt('mp4', scene_name + "_mid")
+        #out_after = cv2.VideoWriter(outputVideo1, outputCodec, fps, (103, 58))
+        out_after = cv2.VideoWriter(outputVideo1, outputCodec, fps, (frame_width, frame_height))
         out = cv2.VideoWriter(outputVideo, outputCodec, fps, (frame_width, frame_height))
+
+        out_mid = cv2.VideoWriter(outputVideo2, outputCodec, fps, (frame_width, 10))
 
         current_frame = 0
         while True:
@@ -92,12 +96,22 @@ def vidsss():
             pr = PhotoreceptorImageConverter(ker, grey_frame_2D.shape, 750 * 8)
             frame_post_convol_2D=convert_photoreceptors_to_cv2(pr.apply(grey_frame_2D))
             frame_post_convol_3D = cv2.cvtColor(frame_post_convol_2D, cv2.COLOR_GRAY2BGR)
+
+            mid_frame = frame_height // 2
+            grey_frame_3D[mid_frame - 10, :] = [[0, 0, 200]] * grey_frame_3D.shape[1]
+            grey_frame_3D[mid_frame + 10, :] = [[0, 0, 200]] * grey_frame_3D.shape[1]
             out.write(grey_frame_3D)  # video is constructed of 3d arrays
             out_after.write(frame_post_convol_3D)
+
+
+            crop_mid = grey_frame_3D[mid_frame: mid_frame + 10, 0:frame_width]
+            out_mid.write(crop_mid)
+
+
             all_frames.append(frame_post_convol_2D)
             # print('Creating...' + name)
             # aux.greyscale_plot(a2_greyFrame3D)
-            cv2.imwrite(name, frame_post_convol_3D)  # save grey scale frames of each video
+            cv2.imwrite(name, crop_mid)  # save grey scale mid frames of each video
             # cv2.imshow('video gray', greyFrame2D)
             # cv2.waitKey(0)
             current_frame += 1

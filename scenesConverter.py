@@ -37,8 +37,7 @@ def extractFPS(video_input):
 def extractVideoParameters(videoInput):
     return extractFPS(videoInput), int(videoInput.get(3)), int(videoInput.get(4))
 
-def import_all_scenes():
-
+#def import_all_scenes():
 
 if __name__ == '__main__':
 
@@ -63,8 +62,8 @@ if __name__ == '__main__':
         makeMissingDir(outputVideoPath)
 
         outputVideo, outputCodec = videoCodecAndExt('mp4')
-        out_after = cv2.VideoWriter(outputVideo, outputCodec, fps, (103, 58))
-        out = cv2.VideoWriter(outputVideo, outputCodec, fps, (frame_width, frame_height))
+        ###out_after = cv2.VideoWriter(outputVideo, outputCodec, fps, (103, 58))
+        out = cv2.VideoWriter(outputVideo, outputCodec, fps, (frame_width, 10))
         counter = 0
         currentFrame = 0
         while True:
@@ -74,7 +73,17 @@ if __name__ == '__main__':
             framesPath = 'frames/' + str(sceneName)
             makeMissingDir(framesPath)
             name = './' + framesPath + '/frame' + str(currentFrame) + '.jpg'
-            a_greyFrame2D = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+            mid_frame = frame_height // 2
+            crop_img = frame[mid_frame : mid_frame + 10 , 0:frame_width]
+            print(crop_img.shape[0])
+            print("yay")
+            print(crop_img.shape[1])
+            #cv2.imshow("cropped", crop_img)
+            #cv2.waitKey(0)
+
+            a_greyFrame2D = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
+            ###a_greyFrame2D = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             a_greyFrame3D = cv2.cvtColor(a_greyFrame2D, cv2.COLOR_GRAY2BGR)
 
 
@@ -89,7 +98,10 @@ if __name__ == '__main__':
             #allFrames.append(a_greyFrame2D)
             # print('Creating...' + name)
             #aux.greyscale_plot(a2_greyFrame3D)
-            cv2.imwrite(name, a2_greyFrame3D)  # save grey scale frames of each video
+            ###cv2.imwrite(name, a2_greyFrame3D)  # save grey scale frames of each video
+
+            cv2.imwrite(name, crop_img)  # save grey scale FRAMES of each video
+
             # cv2.imshow('video gray', greyFrame2D)
             # cv2.waitKey(0)
             currentFrame += 1
