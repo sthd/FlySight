@@ -2,7 +2,8 @@ import numpy as np
 import pickle
 import auxFunctions as aux
 from ClipProcessing.all_clips_decor import all_clips
-from ClipProcessing.helping_functions import capture_video_clip_frames, get_clip_file_name, pickle_output_array, save_surface_plot, try_my_graph, try_my_graph2
+from ClipProcessing.helping_functions import capture_video_clip_frames, get_clip_file_name, pickle_output_array, save_surface_plot
+# try_my_graph, try_my_graph2
 #from ClipProcessing.helping_functions import try_my_graph as tmg
 from EMD.EMD import make_basic_emd
 from flyConvol import PhotoreceptorImageConverter
@@ -75,6 +76,6 @@ if __name__ == '__main__':
     example = pickle.load(pickle_in)
     #save_surface_plot(angle_response_over_time_array, clip_file_name, output_dir)
 
-    try_my_graph(example, "1.mp4", "/Users/elior/Library/Mobile Documents/")
-    try_my_graph2(example, "1.mp4", "/Users/elior/Library/Mobile Documents/")
+    #try_my_graph(example, "1.mp4", "/Users/elior/Library/Mobile Documents/")
+    #try_my_graph2(example, "1.mp4", "/Users/elior/Library/Mobile Documents/")
     #print(example)
