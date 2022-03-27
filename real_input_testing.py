@@ -10,7 +10,7 @@ if __name__ == '__main__':
     ker = aux.make_gaussian_kernel(9, .5)
     # aux.greyscale_plot(ker)
 
-    img = cv2.imread('Demoiselle_Crane.jpg', cv2.IMREAD_GRAYSCALE)
+    img = cv2.imread('data/Demoiselle_Crane.jpg', cv2.IMREAD_GRAYSCALE)
 
     # aux.greyscale_plot(img)
     print(img.shape)
