@@ -52,10 +52,11 @@ def dilation_response_mid_horizontal(output_dir: str, input_clip: str, dilation)
     """
     clip_file_name = get_clip_file_name(input_clip)
     greyscale_frames = capture_video_clip_frames(input_clip)
-    angle_response_over_time_array = get_emd_responses(greyscale_frames,
-                                                       PhotoreceptorImageConverter(aux.make_gaussian_kernel(15), greyscale_frames[0].shape, 6000), dilation)
-    pickle_output_array_d(angle_response_over_time_array, clip_file_name, output_dir, dilation)
-    save_surface_plot_d(angle_response_over_time_array, clip_file_name, output_dir, dilation)
+    if greyscale_frames:
+        angle_response_over_time_array = get_emd_responses(greyscale_frames,
+                                                           PhotoreceptorImageConverter(aux.make_gaussian_kernel(15), greyscale_frames[0].shape, 6000), dilation)
+        pickle_output_array_d(angle_response_over_time_array, clip_file_name, output_dir, dilation)
+        save_surface_plot_d(angle_response_over_time_array, clip_file_name, output_dir, dilation)
 
 
 def get_emd_responses(frames, photoreceptor: PhotoreceptorImageConverter, dilation) -> np.array:
