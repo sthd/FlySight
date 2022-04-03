@@ -1,15 +1,15 @@
 import os
 
-#ROOT = "/Users/iddobar-haim/Library/Mobile Documents/com~apple~CloudDocs/FlySightProject/RealInputClips2"
+ROOT_IDDO = "/Users/iddobar-haim/Library/Mobile Documents/com~apple~CloudDocs/University/FlySightProject/RealInputClips2"
 #ROOT ="/Users/elior/Library/Mobile Documents/com~apple~CloudDocs/FlySightProject/RealInputClips"
-ROOT = "/Users/elior/Library/Mobile Documents/com~apple~CloudDocs/FlySightProject/RealInputClips2"
+ROOT_ELIOR = "/Users/elior/Library/Mobile Documents/com~apple~CloudDocs/FlySightProject/RealInputClips2"
 PILLAR = "Pillar(A)"
 CORNER = "Corner(B)"
 EDGE = "WallEdge(C)"
 OBJECT_DIRS = (PILLAR, CORNER, EDGE)
 
 
-def all_clips(function, input_root_directory=ROOT, *args, **kwargs):
+def all_clips(function, input_root_directory=ROOT_IDDO, *args, **kwargs):
     """
     Applies a given function to all .mp4 clips found in a given directory.
     :param function: The function to apply to all clips found
@@ -55,4 +55,4 @@ def make_txt_file_with_mp4_name(output_dir, input_clip):
 
 
 if __name__ == '__main__':
-    all_clips(make_txt_file_with_mp4_name, ROOT)
+    all_clips(make_txt_file_with_mp4_name, ROOT_IDDO)
