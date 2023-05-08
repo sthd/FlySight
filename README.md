@@ -1,22 +1,18 @@
 # Object Detection Inspired by the Biology of Flying Insects
 
-<p align="center">
-    <img src="https://github.com/sthd/FlySight/blob/master/Design/model.png" width="400" alt="The Flying agent Model">
-</p>
+Made with **[Iddo bar-Haim](https://www.linkedin.com/in/iddo-bar-haim-92193a18a)**, supervised by **Yuval Silman** in collaboration with **Rafael**.
 
-Made with **[Iddo bar-Haim](https://www.linkedin.com/in/iddo-bar-haim-92193a18a)**, supervised by **Yuval Silman** in collaboration with **Rafael**
+
+
+
+<p align="center"><img src="https://github.com/sthd/FlySight/blob/master/Design/ProjectPoster.png" width="100%"></p>
+
 
 ## Project Goal and Background
 We examined the possibility of analysing spatial motion using simple sensors and a reduced calculation cost.
 The algorithm is based on successful EMD-based applications that were founded on the The *Drosophila vision model* a.k.a **EMD** that was presented by **Hassenstein** and **Reichardt** in 1956
 
-
-<p align="center"><img src="https://github.com/sthd/FlySight/blob/master/Design/projectPoster.png" width="100%"></p>
-
-
-
-
-
+<p align="center"><img src="https://github.com/sthd/FlySight/blob/master/Design/model.png" width="400" alt="The Flying agent Model"></p>
 
 
 ## The Algorithm
